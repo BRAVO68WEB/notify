@@ -3,7 +3,11 @@ import { Context, Hono } from 'hono'
 
 const app = new Hono()
 
-app.post('/log', async (c: Context) => {
+app.get('/', (c: Context) =>{
+  return c.redirect('https://github.com/BRAVO68WEB/notify')
+})
+
+app.all('/log', async (c: Context) => {
   try {
     const body = await c.req.json();
     const headers = await c.req.header();
@@ -50,6 +54,12 @@ app.post('/log', async (c: Context) => {
       return c.json({ error: error.message }, 500);
     }
   }
+})
+
+app.all('*', ctx => {
+  return ctx.json({
+    message: 'Not Found'
+  }, 404);
 })
 
 Deno.serve(app.fetch)
